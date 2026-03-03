@@ -5,4 +5,4 @@ A mobile app that matches your resume to a job description using AI — uploads,
 👉 
 
 ## 设计任务清单（HTML）
-- 源文件：[`ResumeAI-App`](https://github.com/ute-ilse/ResumeAI-App/blob/main/index.html)
+- 在线版：https://ute-ilse.github.io/ResumeAI-App/
