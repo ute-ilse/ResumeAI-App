@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume AI App — Design Task List</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --border: #2a2a2a;
+    --accent: #c8f135;
+    --accent2: #3b82f6;
+    --accent3: #f97316;
+    --text: #f0f0f0;
+    --muted: #666;
+    --done-bg: #1a1a1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
+
+  header {
+    max-width: 720px;
+    margin: 0 auto 48px;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .progress-bar-wrap {
+    margin-top: 28px;
+    background: var(--border);
+    border-radius: 2px;
+    height: 3px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .section {
+    max-width: 720px;
+    margin: 0 auto 40px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase-tag {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .p1 { background: #1a2e00; color: var(--accent); }
+  .p2 { background: #0f1f3d; color: var(--accent2); }
+  .p3 { background: #2d1500; color: var(--accent3); }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .task-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .task-card:hover {
+    border-color: #444;
+    transform: translateX(3px);
+  }
+
+  .task-card.done {
+    background: var(--done-bg);
+    border-color: #222;
+    opacity: 0.55;
+  }
+
+  .task-card.done .task-title {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+    font-size: 11px;
+  }
+
+  .task-card.done .check-box {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  .task-body { flex: 1; }
+
+  .task-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+
+  .task-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .tag {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .tag-ui { background: #1e1e2e; color: #a78bfa; }
+  .tag-ux { background: #1a2530; color: #38bdf8; }
+  .tag-ai { background: #1a2e00; color: var(--accent); }
+  .tag-arch { background: #2d1a00; color: #fb923c; }
+
+  .effort {
+    font-size: 9px;
+    color: var(--muted);
+    margin-left: auto;
+    letter-spacing: 0.05em;
+  }
+
+  .task-desc {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  .sub-tasks {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #1f1f1f;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .sub-task {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #777;
+    cursor: pointer;
+  }
+
+  .sub-task:hover { color: var(--text); }
+
+  .sub-check {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #333;
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .sub-task.done .sub-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  .sub-task.done span { text-decoration: line-through; color: #444; }
+
+  .left-accent {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+
+  .la-p1 { background: var(--accent); }
+  .la-p2 { background: var(--accent2); }
+  .la-p3 { background: var(--accent3); }
+
+  .filter-row {
+    max-width: 720px;
+    margin: 0 auto 32px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  footer {
+    max-width: 720px;
+    margin: 48px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Product Design Brief → Tasks</div>
+  <h1>Resume<span>AI</span> App<br>Design Breakdown</h1>
+  <p class="subtitle">A mobile app that matches your resume to a job description using AI — uploads, analysis, keyword extraction, and smart resume regeneration.</p>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num" id="total-count">18</div>
+      <div class="stat-label">Total Tasks</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="done-count">0</div>
+      <div class="stat-label">Completed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="pct-count">0%</div>
+      <div class="stat-label">Progress</div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap" style="margin-top:20px; margin-left:0; margin-right:0; max-width:100%;">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+  <div class="progress-label" style="margin-left:0;" id="progress-label">0 of 18 tasks complete</div>
+</header>
+
+<div class="filter-row">
+  <button class="filter-btn active" onclick="filterTasks('all', this)">All</button>
+  <button class="filter-btn" onclick="filterTasks('p1', this)">Phase 1 · Foundation</button>
+  <button class="filter-btn" onclick="filterTasks('p2', this)">Phase 2 · Core</button>
+  <button class="filter-btn" onclick="filterTasks('p3', this)">Phase 3 · Polish</button>
+</div>
+
+<!-- PHASE 1 -->
+<div class="section" data-phase="p1">
+  <div class="section-header">
+    <span class="phase-tag p1">Phase 1</span>
+    <span class="section-title">Foundation & Architecture</span>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p1"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">App Architecture & Navigation Map</span>
+        <span class="tag tag-arch">Arch</span>
+        <span class="effort">~4h</span>
+      </div>
+      <div class="task-desc">Define the screen flow: Onboarding → Upload Resume → Paste/Upload JD → Processing → Results → Edited Resume → Export. Map all states including empty, loading, error.</div>
+      <div class="sub-tasks">
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Define all screens & states</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Map user journey from upload to export</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Identify edge cases (large files, bad JD format)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p1"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Onboarding Screens</span>
+        <span class="tag tag-ux">UX</span>
+        <span class="effort">~3h</span>
+      </div>
+      <div class="task-desc">2–3 onboarding screens explaining the app value: upload resume, paste job description, get AI-matched result. Skip option. Light sign-up or guest mode decision.</div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p1"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Design System & Component Library</span>
+        <span class="tag tag-ui">UI</span>
+        <span class="effort">~6h</span>
+      </div>
+      <div class="task-desc">Establish colors, typography, spacing, button styles, input fields, cards, badges (for keywords), and loading states. Mobile-first, accessible contrast ratios.</div>
+      <div class="sub-tasks">
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Color palette & dark/light mode decision</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Typography scale</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Core UI components (buttons, inputs, cards)</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Keyword badge component</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p1"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Home / Dashboard Screen</span>
+        <span class="tag tag-ui">UI</span>
+        <span class="effort">~3h</span>
+      </div>
+      <div class="task-desc">Central hub where users start a new match, see past analyses, and track their job applications. Prominent CTA to begin.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2 -->
+<div class="section" data-phase="p2">
+  <div class="section-header">
+    <span class="phase-tag p2">Phase 2</span>
+    <span class="section-title">Core Features</span>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p2"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Resume Upload Screen</span>
+        <span class="tag tag-ux">UX</span>
+        <span class="effort">~4h</span>
+      </div>
+      <div class="task-desc">Design upload interface supporting PDF/DOCX. Show file name, size, preview thumbnail. Allow re-upload. Handle errors gracefully (wrong format, too large).</div>
+      <div class="sub-tasks">
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Upload dropzone / file picker UI</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>File preview & confirmation state</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Error states (wrong type, oversized)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p2"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Job Description Input Screen</span>
+        <span class="tag tag-ux">UX</span>
+        <span class="effort">~3h</span>
+      </div>
+      <div class="task-desc">Two input modes: paste raw text OR upload a JD file. Large text area with character count. Option to paste a job URL (stretch). Clear/edit before submitting.</div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p2"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">AI Processing / Loading Screen</span>
+        <span class="tag tag-ai">AI</span>
+        <span class="tag tag-ui">UI</span>
+        <span class="effort">~3h</span>
+      </div>
+      <div class="task-desc">Engaging loading state while AI analyzes. Show step-by-step progress: "Parsing resume… Extracting JD keywords… Matching skills… Rebuilding resume." Animation that feels intelligent, not generic.</div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p2"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">JD Analysis Results Screen</span>
+        <span class="tag tag-ai">AI</span>
+        <span class="tag tag-ui">UI</span>
+        <span class="effort">~5h</span>
+      </div>
+      <div class="task-desc">Display extracted JD keywords (hard skills, soft skills, requirements) as scannable badges. Show a match score vs. original resume. Highlight gaps clearly.</div>
+      <div class="sub-tasks">
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Keyword badges (matched / missing / nice-to-have)</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Match score visual (ring / bar)</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Gap analysis section</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p2"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">AI-Generated Resume Screen</span>
+        <span class="tag tag-ai">AI</span>
+        <span class="tag tag-ui">UI</span>
+        <span class="effort">~6h</span>
+      </div>
+      <div class="task-desc">Display the newly generated resume with inline highlights showing what was changed or added. Side-by-side or toggle between "original" and "new" views. Clearly show AI-inserted keywords.</div>
+      <div class="sub-tasks">
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Resume viewer component (mobile-readable)</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Before / after toggle</span></div>
+        <div class="sub-task" onclick="toggleSub(event, this)"><div class="sub-check">✓</div><span>Highlight changed / added text</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p2"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Inline Resume Editor</span>
+        <span class="tag tag-ux">UX</span>
+        <span class="effort">~5h</span>
+      </div>
+      <div class="task-desc">Let users tweak the AI-generated resume before export. Tap to edit any section. Undo/redo. Accept or reject individual AI suggestions. Keep it fast and finger-friendly.</div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p2"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Export Screen</span>
+        <span class="tag tag-ux">UX</span>
+        <span class="effort">~2h</span>
+      </div>
+      <div class="task-desc">Export as PDF or DOCX. Option to share directly to email or cloud (Google Drive, etc.). Confirmation screen with success state.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 3 -->
+<div class="section" data-phase="p3">
+  <div class="section-header">
+    <span class="phase-tag p3">Phase 3</span>
+    <span class="section-title">Polish & Delight</span>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p3"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">History & Saved Sessions</span>
+        <span class="tag tag-ux">UX</span>
+        <span class="effort">~3h</span>
+      </div>
+      <div class="task-desc">List of past resume ↔ JD matches. Show date, company name (if parseable), and match score. Tap to revisit or re-export.</div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p3"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Empty States & Error Screens</span>
+        <span class="tag tag-ui">UI</span>
+        <span class="effort">~2h</span>
+      </div>
+      <div class="task-desc">Design friendly empty states for new users, failed uploads, AI errors, and no-internet scenarios. Each should explain what happened and offer a clear next action.</div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p3"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Micro-interactions & Transitions</span>
+        <span class="tag tag-ui">UI</span>
+        <span class="effort">~3h</span>
+      </div>
+      <div class="task-desc">Smooth screen transitions. Satisfying checkmark animation on match complete. Keyword badges animate in. Score counter counts up. These details build trust in an AI product.</div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p3"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Settings & Account Screen</span>
+        <span class="tag tag-ux">UX</span>
+        <span class="effort">~2h</span>
+      </div>
+      <div class="task-desc">Profile, export preferences (default PDF/DOCX), notification settings, data privacy controls. Keep minimal for V1.</div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p3"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">Accessibility Audit</span>
+        <span class="tag tag-ux">UX</span>
+        <span class="effort">~3h</span>
+      </div>
+      <div class="task-desc">Check contrast ratios, tap target sizes (min 44×44pt), screen reader labels for all interactive elements, and keyboard/focus states. Essential before shipping.</div>
+    </div>
+  </div>
+
+  <div class="task-card" onclick="toggleTask(this)">
+    <div class="left-accent la-p3"></div>
+    <div class="check-box">✓</div>
+    <div class="task-body">
+      <div class="task-top">
+        <span class="task-title">App Icon & Splash Screen</span>
+        <span class="tag tag-ui">UI</span>
+        <span class="effort">~2h</span>
+      </div>
+      <div class="task-desc">Design an app icon that communicates AI + career. Splash/launch screen with brand moment. Design all required iOS/Android icon sizes.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>ResumeAI · Design Task Tracker</span>
+  <span id="footer-progress">0 / 18 complete</span>
+</footer>
+
+<script>
+  let totalTasks = document.querySelectorAll('.task-card').length;
+
+  function countDone() {
+    return document.querySelectorAll('.task-card.done').length;
+  }
+
+  function updateStats() {
+    const done = countDone();
+    const pct = Math.round((done / totalTasks) * 100);
+    document.getElementById('done-count').textContent = done;
+    document.getElementById('pct-count').textContent = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = `${done} of ${totalTasks} tasks complete`;
+    document.getElementById('footer-progress').textContent = `${done} / ${totalTasks} complete`;
+  }
+
+  function toggleTask(card) {
+    card.classList.toggle('done');
+    updateStats();
+  }
+
+  function toggleSub(e, sub) {
+    e.stopPropagation();
+    sub.classList.toggle('done');
+  }
+
+  function filterTasks(phase, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('.section').forEach(s => {
+      if (phase === 'all' || s.dataset.phase === phase) {
+        s.style.display = '';
+      } else {
+        s.style.display = 'none';
+      }
+    });
+  }
+
+  updateStats();
+</script>
+</body>
+</html>
